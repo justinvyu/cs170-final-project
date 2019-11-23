@@ -7,7 +7,6 @@ def get_files_with_extension(directory, extension):
             files.append(f'{directory}/{name}')
     return files
 
-
 def read_file(file):
     with open(file, 'r') as f:
         data = f.readlines()

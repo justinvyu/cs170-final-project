@@ -2,7 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from generate_inputs import create_random_graph, create_branching_graph
+from generate_graphs import create_random_graph, create_branching_graph
 
 def get_weights(G):
     return [e[2]['weight'] for e in G.edges(data=True)]
