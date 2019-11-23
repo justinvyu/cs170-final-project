@@ -45,6 +45,25 @@ def create_cycle_graph(num_vertices, scale=30):
     G, message = adjacency_matrix_to_graph(adj)
     return G
 
+def create_diamond_graph(num_vertices, scale=30):
+    assert num_vertices % 4 == 0
+    G = create_cycle_graph(num_vertices, scale)
+    side = num_vertices // 4
+    corners1 = 0
+    corners2 = side
+    corners3 = side * 2
+    corners4 = side * 3
+    while corners1 + 1 != corners2 and corners3 + 1 != corners4:
+        corners1 += 1
+        corners3 += 1
+        if random.randint(0, 1) == 1:
+            shortest_path = sum(nx.shortest_path(G, corners1, corners3))
+            weight = random.randint(1, shortest_path - 1)
+            G.add_edge(corners1, corners3, weight=weight)
+            if not is_metric(G):
+                G.remove_edge(corners1, corners3)
+    return G
+
 def create_branching_graph(num_locations,
                            max_branching_factor=3,
                            branch_prob=0.25):
@@ -100,7 +119,8 @@ def create_branching_graph(num_locations,
 GRAPH_TYPES = {
     'random': create_random_graph,
     'branching': create_branching_graph,
-    'cycle': create_cycle_graph
+    'cycle': create_cycle_graph,
+    'diamond': create_diamond_graph
 }
 
 if __name__ == '__main__':
