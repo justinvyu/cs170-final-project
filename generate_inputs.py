@@ -4,16 +4,43 @@ from generate_graphs import (
     create_cycle_graph,
     create_diamond_graph)
 from subgraph import join_subgraphs
-
+import random
 import os
 from utils import write_to_file
+from student_utils import is_metric
 
-def generate_graph(size):
-    pass
+def generate_small():
+    return create_branching_graph(50, 3, .5)
+
+def generate_bigger(size):
+    func = [create_random_graph, create_branching_graph, create_cycle_graph, create_diamond_graph]
+    limit = size
+    graphs = []
+    while limit > 0:
+        indx = random.randint(0, 3)
+        if indx == 0:
+            num_verts = random.randint(min(5, limit), min(10, limit))
+        if indx == 1:
+            num_verts = random.randint(min(15, limit), min(45, limit))
+        if indx == 2:
+            num_verts = random.randint(min(8, limit), min(10, limit))
+        if indx == 3:
+            num_verts = random.randint(min(8, limit), min(10, limit))
+            remainder = num_verts % 4
+            num_verts -= remainder
+        num_verts = min(num_verts, limit)
+        graphs.append(func[indx](num_verts))
+        limit -= num_verts
+        print(limit)
+    return join_subgraphs(graphs)
 
 if __name__ == '__main__':
-    G = generate_graph(50)
+    G = generate_bigger(200)
+    print(is_metric(G._G))
     G.draw()
+
+def select_houses(G, num_houses):
+    sample = np.random.choice(len(G), size=num_houses, replace=False)
 
 
 def write_input_to_file(filepath, G, H, source):
@@ -23,7 +50,7 @@ def write_input_to_file(filepath, G, H, source):
     H: list of houses referenced by the vertex identifier
     source: vertex identifier of the source node
     """
-    assert source in G, 'Source vertex must be in the graph'
+    # assert source in G, 'Source vertex must be in the graph'
 
     def list_as_str(lst):
         return [str(el) for el in lst]
