@@ -114,7 +114,8 @@ def create_branching_graph(num_locations,
                     next_vertex += 1
         x_pos += 1
     
-    return adj, vertex_positions
+    G, message = adjacency_matrix_to_graph(adj)
+    return G
 
 GRAPH_TYPES = {
     'random': create_random_graph,
@@ -133,8 +134,7 @@ if __name__ == '__main__':
                         choices=list(GRAPH_TYPES.keys()))
     args = parser.parse_args()
 
-    G= GRAPH_TYPES[args.graph_type](args.num_locations)
-    #G, message = adjacency_matrix_to_graph(adj)
+    G = GRAPH_TYPES[args.graph_type](args.num_locations)
 
     pos = nx.kamada_kawai_layout(G)
     import ipdb; ipdb.set_trace()
