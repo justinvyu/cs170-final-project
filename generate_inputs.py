@@ -1,8 +1,9 @@
 import numpy as np
 import random
-from student_utils import adjacency_matrix_to_graph
+from student_utils import adjacency_matrix_to_graph, is_metric
 import matplotlib.pyplot as plt
 import networkx as nx
+import itertools
 
 def init_adj_matrix(num_vertices):
     return [
@@ -10,8 +11,32 @@ def init_adj_matrix(num_vertices):
         for _ in range(num_vertices)
     ]
 
-def create_random_graph():
-    pass
+def create_random_graph(num_vertices, sparsity=.5):
+    G = create_random_tree(num_vertices)
+    num_edges = num_vertices - 1
+    total_edges = (1 - sparsity) * num_vertices * (num_vertices - 1)
+    remaining_edges = [pair for pair in itertools.combinations(G.nodes(), 2)
+           if not G.has_edge(*pair) and pair[0] != pair[1]]
+    while num_edges < total_edges and remaining_edges:
+        rand_idx = random.randint(0, len(remaining_edges) - 1)
+        new_edge = remaining_edges.pop(rand_idx)
+        shortest_path = sum(nx.shortest_path(G, *new_edge))
+        weight = random.randint(1, shortest_path - 1)
+        G.add_edge(*new_edge, weight=weight)
+        if not is_metric(G):
+            G.remove_edge(*new_edge)
+        num_edges += 1
+    return G
+
+""" 
+helper 
+"""
+def create_random_tree(num_vertices, scale=100, offset=3):
+    adj = (np.random.rand(num_vertices, num_vertices) * scale + offset).astype(np.uint32)
+    G, message = adjacency_matrix_to_graph(adj)
+    G = nx.minimum_spanning_tree(G)
+    return G
+
 
 def create_branching_graph(num_locations,
                            max_branching_factor=3,
@@ -80,9 +105,12 @@ if __name__ == '__main__':
                         choices=list(GRAPH_TYPES.keys()))
     args = parser.parse_args()
 
-    adj, pos = GRAPH_TYPES[args.graph_type](args.num_locations)
-    G, message = adjacency_matrix_to_graph(adj)
+    G= GRAPH_TYPES[args.graph_type](args.num_locations)
+    #G, message = adjacency_matrix_to_graph(adj)
 
     pos = nx.kamada_kawai_layout(G)
-    nx.draw(G, with_labels=True, pos=pos)
-    plt.show()
+    import ipdb; ipdb.set_trace()
+    #nx.draw(G, with_labels=True, pos=pos)
+    #labels = nx.get_edge_attributes(G,'weight')
+    #nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=labels)
+    #plt.show()
