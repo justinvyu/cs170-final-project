@@ -75,7 +75,7 @@ def create_diamond_graph(num_vertices, scale=30):
 
 def create_branching_graph(num_locations,
                            max_branching_factor=3,
-                           branch_prob=0.25):
+                           branch_prob=0.5):
     """
     Input:
         num_locations: Number of vertices in this subgraph.

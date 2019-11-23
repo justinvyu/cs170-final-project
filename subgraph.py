@@ -21,7 +21,7 @@ class Subgraph:
         self.output_vertices = output_vertices
 
     def draw(self):
-        nx.draw(self._G)
+        nx.draw(self._G, with_labels=True)
         plt.show()
 
     @classmethod
