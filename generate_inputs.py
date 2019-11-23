@@ -9,3 +9,5 @@ def generate_graph(size):
 if __name__ == '__main__':
     G = generate_graph(50)
     G.draw()
+
+def write_to_file():
