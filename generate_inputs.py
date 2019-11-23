@@ -28,15 +28,22 @@ def create_random_graph(num_vertices, sparsity=.5):
         num_edges += 1
     return G
 
-""" 
-helper 
-"""
 def create_random_tree(num_vertices, scale=100, offset=3):
     adj = (np.random.rand(num_vertices, num_vertices) * scale + offset).astype(np.uint32)
     G, message = adjacency_matrix_to_graph(adj)
     G = nx.minimum_spanning_tree(G)
     return G
 
+def create_cycle_graph(num_vertices, scale=30):
+    adj = [[0 for i in range(num_vertices)] for j in range(num_vertices)]
+    path_weight = 0
+    for i in range(1, num_vertices):
+        weight = random.randint(1, scale)
+        adj[i - 1][i] = weight
+        path_weight += weight
+    adj[num_vertices - 1][0] = random.randint(1, path_weight - 1)
+    G, message = adjacency_matrix_to_graph(adj)
+    return G
 
 def create_branching_graph(num_locations,
                            max_branching_factor=3,
@@ -93,6 +100,7 @@ def create_branching_graph(num_locations,
 GRAPH_TYPES = {
     'random': create_random_graph,
     'branching': create_branching_graph,
+    'cycle': create_cycle_graph
 }
 
 if __name__ == '__main__':
