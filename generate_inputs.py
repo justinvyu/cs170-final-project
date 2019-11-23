@@ -1,7 +1,20 @@
-# Generate inputs
+from generate_graphs import (
+    create_random_graph,
+    create_branching_graph,
+    create_cycle_graph,
+    create_diamond_graph)
+from subgraph import join_subgraphs
 
 import os
 from utils import write_to_file
+
+def generate_graph(size):
+    pass
+
+if __name__ == '__main__':
+    G = generate_graph(50)
+    G.draw()
+
 
 def write_input_to_file(filepath, G, H, source):
     """

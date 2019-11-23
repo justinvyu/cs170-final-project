@@ -4,6 +4,7 @@ from student_utils import adjacency_matrix_to_graph, is_metric
 import matplotlib.pyplot as plt
 import networkx as nx
 import itertools
+from subgraph import Subgraph, join_subgraphs
 
 def init_adj_matrix(num_vertices):
     return [
@@ -12,6 +13,7 @@ def init_adj_matrix(num_vertices):
     ]
 
 def create_random_graph(num_vertices, sparsity=.5):
+    assert num_vertices > 1
     G = create_random_tree(num_vertices)
     num_edges = num_vertices - 1
     total_edges = (1 - sparsity) * num_vertices * (num_vertices - 1)
@@ -26,7 +28,10 @@ def create_random_graph(num_vertices, sparsity=.5):
         if not is_metric(G):
             G.remove_edge(*new_edge)
         num_edges += 1
-    return G
+    sample_size = num_vertices // 4 if num_vertices //4 >= 2 else 2
+    sample = np.random.choice(num_vertices, size=sample_size, replace=False)
+    np.random.shuffle(sample)
+    return Subgraph(G, sample[0:len(sample)//2].tolist(), sample[len(sample)//2:].tolist())
 
 def create_random_tree(num_vertices, scale=100, offset=3):
     adj = (np.random.rand(num_vertices, num_vertices) * scale + offset).astype(np.uint32)
@@ -35,6 +40,7 @@ def create_random_tree(num_vertices, scale=100, offset=3):
     return G
 
 def create_cycle_graph(num_vertices, scale=30):
+    assert num_vertices > 1
     adj = [[0 for i in range(num_vertices)] for j in range(num_vertices)]
     path_weight = 0
     for i in range(1, num_vertices):
@@ -43,11 +49,14 @@ def create_cycle_graph(num_vertices, scale=30):
         path_weight += weight
     adj[num_vertices - 1][0] = random.randint(1, path_weight - 1)
     G, message = adjacency_matrix_to_graph(adj)
-    return G
+    sample_size = num_vertices // 4 if num_vertices //4 >= 2 else 2
+    sample = np.random.choice(num_vertices, size=sample_size, replace=False)
+    np.random.shuffle(sample)
+    return Subgraph(G, sample[0:len(sample)//2].tolist(), sample[len(sample)//2:].tolist())
 
 def create_diamond_graph(num_vertices, scale=30):
     assert num_vertices % 4 == 0
-    G = create_cycle_graph(num_vertices, scale)
+    G = create_cycle_graph(num_vertices, scale)._G
     side = num_vertices // 4
     corners1 = 0
     corners2 = side
@@ -62,7 +71,7 @@ def create_diamond_graph(num_vertices, scale=30):
             G.add_edge(corners1, corners3, weight=weight)
             if not is_metric(G):
                 G.remove_edge(corners1, corners3)
-    return G
+    return Subgraph(G, [corners1], [corners3])
 
 def create_branching_graph(num_locations,
                            max_branching_factor=3,
@@ -115,7 +124,12 @@ def create_branching_graph(num_locations,
         x_pos += 1
     
     G, message = adjacency_matrix_to_graph(adj)
-    return G
+    inp = [0]
+    out = []
+    for i in range(num_locations):
+        if G.degree[i] == 1 and i > 0:
+            out.append(i)
+    return Subgraph(G, inp, out)
 
 GRAPH_TYPES = {
     'random': create_random_graph,
