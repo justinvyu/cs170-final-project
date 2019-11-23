@@ -2,7 +2,6 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 import random
-from generate_inputs import create_random_graph, create_branching_graph
 
 def get_weights(G):
     return [e[2]['weight'] for e in G.edges(data=True)]
@@ -26,7 +25,7 @@ class Subgraph:
         plt.show()
 
     @classmethod
-    def join(cls, subgraph1, subgraph2, connection_density=0.25):
+    def join(cls, subgraph1, subgraph2):
         """
         connection_density: max_connections = connection_density *
                             min(|subgraph1.output_vertices|, |subgraph.input_vertices|)
@@ -41,8 +40,8 @@ class Subgraph:
         merged_graph = nx.compose(G, H)
 
         # Add edges between subgraph1.output_vertices and subgraph2.input_vertices
-        max_connections = int(connection_density * min(
-            len(subgraph1.output_vertices), len(subgraph2.input_vertices)))
+        max_connections = min(len(subgraph1.output_vertices),
+                              len(subgraph2.input_vertices))
         num_connections = random.randint(1, max(max_connections, 1))
         num_edges_added = 0
 
