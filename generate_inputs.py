@@ -34,10 +34,10 @@ def generate_bigger(size):
         print(limit)
     return join_subgraphs(graphs)
 
-if __name__ == '__main__':
-    G = generate_bigger(200)
-    print(is_metric(G._G))
-    G.draw()
+# if __name__ == '__main__':
+#     G = generate_bigger(200)
+#     print(is_metric(G._G))
+#     G.draw()
 
 def select_houses(G, num_houses):
     sample = np.random.choice(len(G), size=num_houses, replace=False)
@@ -75,10 +75,28 @@ def graph_to_adjacency_matrix(G):
         adj[u][v] = adj[v][u] = data['weight']
     return adj
 
+# if __name__ == '__main__':
+#     from generate_graphs import create_branching_graph
+#     G = create_branching_graph(10)
+#     H = [2, 4, 6]
+#     source = 0
+#     fp = './test.in'
+#     write_input_to_file(fp, G, H, source)
+
 if __name__ == '__main__':
-    from generate_graphs import create_branching_graph
-    G = create_branching_graph(10)
-    H = [2, 4, 6]
-    source = 0
-    fp = './test.in'
-    write_input_to_file(fp, G, H, source)
+    # from generate_graphs import create_branching_graph
+    # G = create_branching_graph(10)
+    # H = [2, 4, 6]
+    # source = 0
+    # fp = './test.in'
+    # write_input_to_file(fp, G, H, source)
+    def list_as_str(lst):
+        return [str(el) for el in lst]
+
+    filepath = '200.out'
+    num_vertices = 200
+    vertices = [i for i in range(num_vertices)]
+    num_houses = 100
+    write_to_file(filepath, " ".join(list_as_str(vertices)) + '\n')
+    write_to_file(filepath, f'{num_houses}\n', append=True)
+    write_to_file(filepath, '0 ', append=True)
