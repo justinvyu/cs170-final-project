@@ -13,15 +13,23 @@ from solver_utils import parse_input
 def plot_graph(filepath,
                layout_style=nx.spring_layout,
                show_labels=True,
-               show_edge_weights=False):
-    (num_locations,
-     num_houses,
-     location_names,
-     house_names,
-     source,
-     adj) = parse_input(filepath)
-    
-    G, _ = adjacency_matrix_to_graph(adj)
+               show_edge_weights=False,
+               edges_to_draw=None,
+               directed=False):
+
+    if isinstance(filepath, str):
+        (num_locations,
+        num_houses,
+        location_names,
+        house_names,
+        source,
+        adj) = parse_input(filepath)
+        G, _ = adjacency_matrix_to_graph(adj)
+    else:
+        raise NotImplementedError
+
+    if directed:
+        G = G.to_directed()
     
     plt.figure(figsize=(10,10))
     pos = layout_style(G)
@@ -36,6 +44,12 @@ def plot_graph(filepath,
     if show_edge_weights:
         labels = nx.get_edge_attributes(G, 'weight')
         nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=labels)
+
+    if edges_to_draw:
+        nx.draw_networkx_edges(G,
+                               pos=pos,
+                               edgelist=edges_to_draw,
+                               edge_color='green')
         
     plt.show()
 

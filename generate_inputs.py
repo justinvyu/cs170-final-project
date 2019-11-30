@@ -1,13 +1,14 @@
-from generate_graphs import (
+from phase1.generate_graphs import (
     create_random_graph,
     create_branching_graph,
     create_cycle_graph,
     create_diamond_graph)
-from subgraph import join_subgraphs
+from phase1.subgraph import join_subgraphs
 import random
 import os
 from utils import write_to_file
 from student_utils import is_metric
+import numpy as np
 
 def generate_small():
     return create_branching_graph(50, 3, .5)
@@ -41,7 +42,7 @@ def generate_bigger(size):
 
 def select_houses(G, num_houses):
     sample = np.random.choice(len(G), size=num_houses, replace=False)
-
+    return sample
 
 def write_input_to_file(filepath, G, H, source):
     """

@@ -1,5 +1,3 @@
-
-
 def parse_input(filepath):
     """
     Parses an input file into its respective parts.

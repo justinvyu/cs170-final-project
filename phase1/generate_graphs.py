@@ -4,7 +4,7 @@ from student_utils import adjacency_matrix_to_graph, is_metric
 import matplotlib.pyplot as plt
 import networkx as nx
 import itertools
-from subgraph import Subgraph, join_subgraphs
+from phase1.subgraph import Subgraph, join_subgraphs
 
 def init_adj_matrix(num_vertices):
     return [
