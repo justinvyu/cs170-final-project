@@ -73,7 +73,7 @@ car_cycle is the cycle of the car in terms of indices.
 dropoff_mapping is a dictionary of dropoff location to list of TAs that got off at said droppoff location
 in terms of indices.
 """
-def cost_of_solution(G, car_cycle, dropoff_mapping):
+def old_cost_of_solution(G, car_cycle, dropoff_mapping):
     cost = 0
     message = ''
     dropoffs = dropoff_mapping.keys()
@@ -107,6 +107,38 @@ def cost_of_solution(G, car_cycle, dropoff_mapping):
     message += f'The total cost of your solution is {cost}.\n'
     return cost, message
 
+def cost_of_solution(G, car_cycle, dropoff_mapping):
+    cost = 0
+    message = ''
+    dropoffs = dropoff_mapping.keys()
+    if not is_valid_walk(G, car_cycle):
+        message += 'This is not a valid walk for the given graph.\n'
+        cost = 'infinite'
 
+    if not car_cycle[0] == car_cycle[-1]:
+        message += 'The start and end vertices are not the same.\n'
+        cost = 'infinite'
+    if cost != 'infinite':
+        if len(car_cycle) == 1:
+            car_cycle = []
+        else:
+            car_cycle = get_edges_from_path(car_cycle[:-1]) + [(car_cycle[-2], car_cycle[-1])]
+        if len(car_cycle) != 1:
+            driving_cost = sum([G.edges[e]['weight'] for e in car_cycle]) * 2 / 3
+        else:
+            driving_cost = 0
+        walking_cost = 0
+        shortest = dict(nx.floyd_warshall(G))
+
+        for drop_location in dropoffs:
+            for house in dropoff_mapping[drop_location]:
+                walking_cost += shortest[drop_location][house]
+
+        message += f'The driving cost of your solution is {driving_cost}.\n'
+        message += f'The walking cost of your solution is {walking_cost}.\n'
+        cost = driving_cost + walking_cost
+
+    message += f'The total cost of your solution is {cost}.\n'
+    return cost, message
 def convert_locations_to_indices(list_to_convert, list_of_locations):
     return [list_of_locations.index(name) if name in list_of_locations else None for name in list_to_convert]

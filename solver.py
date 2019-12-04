@@ -5,6 +5,8 @@ sys.path.append('../..')
 import argparse
 import utils
 import networkx as nx
+from mst import mst_dfs_solve
+from flp import flp_solve
 
 from student_utils import *
 """
@@ -30,25 +32,14 @@ def solve(list_of_locations,
         A dictionary mapping drop-off location to a list of homes of TAs that got off at that particular location
         NOTE: both outputs should be in terms of indices not the names of the locations themselves
     """
-    # Naive solver
     G, _ = adjacency_matrix_to_graph(adjacency_matrix)
-    mst = nx.minimum_spanning_tree(G)
-   
-    seen = set()
-    traversal = []
-    def dfs(u):
-        if u not in seen:
-            traversal.append(u)
-            seen.add(u)
-            for v in G.neighbors(u):
-                if v not in seen:
-                    dfs(v)
-                    traversal.append(u)
-    dfs(starting_car_location)
-    dropoffs = {
-        home: home for home in list_of_homes 
-    }
-    return traversal, dropoffs
+    flp_t_0, flp_d_0 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 0)
+    flp_t_1, flp_d_1 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 0)
+    flp_t_2, flp_d_2 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 0)
+    mst_t, mst_d = mst_dfs_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix)
+    options = [(flp_t_0, flp_d_0), (flp_t_1, flp_d_1), (flp_t_2, flp_d_2), (mst_t, mst_d)]
+    selection = min(options, key = lambda x: cost_of_solution(G, x[0], x[1])[0])
+    return selection
 
 """
 ======================================================================
