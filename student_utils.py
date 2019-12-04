@@ -73,13 +73,13 @@ car_cycle is the cycle of the car in terms of indices.
 dropoff_mapping is a dictionary of dropoff location to list of TAs that got off at said droppoff location
 in terms of indices.
 """
-def cost_of_solution(G, car_cycle, dropoff_mapping):
+def cost_of_solution(G, car_cycle, dropoff_mapping, shortest=None):
     cost = 0
     message = ''
     dropoffs = dropoff_mapping.keys()
-    if not is_valid_walk(G, car_cycle):
-        message += 'This is not a valid walk for the given graph.\n'
-        cost = 'infinite'
+    # if not is_valid_walk(G, car_cycle):
+    #     message += 'This is not a valid walk for the given graph.\n'
+    #     cost = 'infinite'
 
     if not car_cycle[0] == car_cycle[-1]:
         message += 'The start and end vertices are not the same.\n'
@@ -94,7 +94,8 @@ def cost_of_solution(G, car_cycle, dropoff_mapping):
         else:
             driving_cost = 0
         walking_cost = 0
-        shortest = dict(nx.floyd_warshall(G))
+        if not shortest:
+            shortest = dict(nx.floyd_warshall(G))
 
         for drop_location in dropoffs:
             for house in dropoff_mapping[drop_location]:
