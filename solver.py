@@ -5,8 +5,9 @@ sys.path.append('../..')
 import argparse
 import utils
 import networkx as nx
-from mst import mst_dfs_solve
-from flp import flp_solve
+from solvers.mst import mst_dfs_solve
+from solvers.flp import flp_solve
+from solvers.local_search import local_search_solve
 
 from student_utils import *
 """
@@ -39,7 +40,8 @@ def solve(list_of_locations,
     mst_t, mst_d = mst_dfs_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix)
     options = [(flp_t_0, flp_d_0), (flp_t_1, flp_d_1), (flp_t_2, flp_d_2), (mst_t, mst_d)]
     selection = min(options, key = lambda x: cost_of_solution(G, x[0], x[1])[0])
-    return selection
+    local_t, local_d = local_search_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, initial_solution=selection[0])
+    return local_t, local_d
 
 """
 ======================================================================

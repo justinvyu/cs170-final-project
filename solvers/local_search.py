@@ -7,8 +7,6 @@ from matplotlib.lines import Line2D
 import sys
 sys.path.append('..')
 from student_utils import adjacency_matrix_to_graph
-from solver_utils import parse_input
-from visualize import plot_graph
 import collections
 
 from student_utils import cost_of_solution
@@ -22,19 +20,20 @@ def local_search_solve(list_of_locations,
                        list_of_homes,
                        starting_car_location,
                        adjacency_matrix,
+                       initial_solution=None,
                        params=[]):
 
+    start = time.time()
     # Generate initial solution (random or greedy algorithm)
-    current_solution = mst_dfs_solve(list_of_locations,
-                                     list_of_homes,
-                                     starting_car_location,
-                                     adjacency_matrix,
-                                     params=params)
-#     current_solution = dijkstra_greedy_solve(list_of_locations,
-#                                              list_of_homes,
-#                                              starting_car_location,
-#                                              adjacency_matrix,
-#                                              params=params)
+    if not initial_solution:
+        current_solution = mst_dfs_solve(list_of_locations,
+                                         list_of_homes,
+                                         starting_car_location,
+                                         adjacency_matrix,
+                                         params=params)
+    else:
+        current_solution = initial_solution
+
     G, _ = adjacency_matrix_to_graph(adjacency_matrix)
     
     home_idxs = [list_of_locations.index(h) for h in list_of_homes]
@@ -152,21 +151,23 @@ def local_search_solve(list_of_locations,
                   f'\n Picked a RANDOM neighbor, Cost = {current_cost}')
             epsilon *= epsilon_decay_factor
             
-        print(f'\nSearching over {len(neighbors)} neighbors...')
+        # print(f'\nSearching over {len(neighbors)} neighbors...')
         best_neighbor = min(neighbors, key=(
             lambda neighbor_sol: evaluate(G, neighbor_sol, home_idxs)))
-        best_cost = evaluate(G, best_neighbor, home_idxs, verbose=True)
+        best_cost = evaluate(G, best_neighbor, home_idxs, verbose=False)
         if best_cost < current_cost:
-            print(f'=== Iteration #{i}, Epsilon = {epsilon} === \n Improved Cost = {best_cost}')
+            # print(f'=== Iteration #{i}, Epsilon = {epsilon} === \n Improved Cost = {best_cost}')
             current_solution = best_neighbor
             current_cost = best_cost
         else:
+            print(f'Local search took: {time.time() - start} seconds')
             print(f'Local search terminated with solution (cost={current_cost}): {current_solution}')
-            return current_solution, best_cost
+            evaluate(G, current_solution, home_idxs, verbose=True)
+            return current_solution, assign_dropoffs(G, current_solution, home_idxs)
         i += 1
         epsilon *= epsilon_decay_factor
         end_iter = time.time()
-        print(f'Iteration took {end_iter - start_iter} s')
+        # print(f'Iteration took {end_iter - start_iter} s')
 
 if __name__ == '__main__':
     # input_path = '../phase1/100.in'
