@@ -34,11 +34,14 @@ def solve(list_of_locations,
         NOTE: both outputs should be in terms of indices not the names of the locations themselves
     """
     G, _ = adjacency_matrix_to_graph(adjacency_matrix)
-    flp_t_0, flp_d_0 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 0)
-    flp_t_1, flp_d_1 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 1)
-    flp_t_2, flp_d_2 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 2)
     mst_t, mst_d = mst_dfs_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix)
-    options = [(flp_t_0, flp_d_0), (flp_t_1, flp_d_1), (flp_t_2, flp_d_2), (mst_t, mst_d)]
+    try:
+        flp_t_0, flp_d_0 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 0)
+        flp_t_1, flp_d_1 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 1)
+        flp_t_2, flp_d_2 = flp_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, 2)
+        options = [(flp_t_0, flp_d_0), (flp_t_1, flp_d_1), (flp_t_2, flp_d_2), (mst_t, mst_d)]
+    except:
+        options = [(mst_t, mst_d)]
     selection = min(options, key = lambda x: cost_of_solution(G, x[0], x[1])[0])
     local_t, local_d = local_search_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, initial_solution=selection[0])
     return local_t, local_d
