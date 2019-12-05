@@ -92,7 +92,9 @@ def local_search_solve(list_of_locations,
             # the vertex being added and the next vertex in the path. If so, a better
             # detour exists than the trivial path to the new vertex and directly back.
             closest_idx = new_path.index(closest_neighbor)
-            if G.has_edge(vertex_to_include, new_path[closest_idx + 1]):
+            # Make sure that the closest_idx is not the last node, otherwise this would
+            # go out of bounds
+            if closest_idx + 1 < len(new_path) and G.has_edge(vertex_to_include, new_path[closest_idx + 1]):
                 new_path.insert(closest_idx + 1, vertex_to_include)
             else:
                 new_path.insert(closest_idx + 1, closest_neighbor)
