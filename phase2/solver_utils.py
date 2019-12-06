@@ -39,3 +39,9 @@ def parse_input(filepath):
             ]
         
     return num_locations, num_houses, location_names, house_names, source, adj
+
+def path_to_edges(path):
+    edges = []
+    for i in range(len(path) - 1):
+        edges.append((path[i], path[i + 1]))
+    return edges

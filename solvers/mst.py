@@ -4,10 +4,15 @@ def mst_dfs_solve(list_of_locations,
                   list_of_homes,
                   starting_car_location,
                   adjacency_matrix,
+                  existing_mst=None,
                   params=[]):
-    G, _ = adjacency_matrix_to_graph(adjacency_matrix)
     
-    mst = nx.minimum_spanning_tree(G)
+    if not existing_mst:
+        G, _ = adjacency_matrix_to_graph(adjacency_matrix)
+        mst = nx.minimum_spanning_tree(G)
+    else:
+        mst = existing_mst
+        
     seen = set()
     traversal = []
     def dfs(u):

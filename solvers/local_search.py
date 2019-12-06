@@ -13,6 +13,8 @@ from student_utils import cost_of_solution
 from itertools import islice
 import time
 
+from solvers.mst import mst_dfs_solve
+
 def k_shortest_paths(G, source, target, k, weight=None):
     return list(islice(nx.shortest_simple_paths(G, source, target, weight=weight), k))
 
@@ -20,17 +22,18 @@ def local_search_solve(list_of_locations,
                        list_of_homes,
                        starting_car_location,
                        adjacency_matrix,
+                       initial_solver=mst_dfs_solve,
                        initial_solution=None,
                        params=[]):
 
     start = time.time()
     # Generate initial solution (random or greedy algorithm)
     if not initial_solution:
-        current_solution = mst_dfs_solve(list_of_locations,
-                                         list_of_homes,
-                                         starting_car_location,
-                                         adjacency_matrix,
-                                         params=params)
+        current_solution, _ = initial_solver(list_of_locations,
+                                             list_of_homes,
+                                             starting_car_location,
+                                             adjacency_matrix,
+                                             params=params)
     else:
         current_solution = initial_solution
 
@@ -102,6 +105,9 @@ def local_search_solve(list_of_locations,
 #             print(f'ADDING {vertex_to_include}: {new_path}')
             neighbors.append(new_path)
 
+        # Handle cycles
+        
+    
         # Swap a vertex (maybe add this)
 
         return neighbors
