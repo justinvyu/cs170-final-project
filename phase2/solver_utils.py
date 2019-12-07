@@ -45,3 +45,16 @@ def path_to_edges(path):
     for i in range(len(path) - 1):
         edges.append((path[i], path[i + 1]))
     return edges
+
+def assign_dropoffs(G, path, homes_idxs, all_pairs_dists):
+    """
+    Returns the dictionary of all dropoffs along this path.
+    """
+    locations_on_path = set(path)
+    dropoffs = collections.defaultdict(list)
+    for h in homes_idxs:
+        closest_loc_on_path = min(locations_on_path,
+                                  key=lambda loc: all_pairs_dists[h][loc])
+        dropoffs[closest_loc_on_path].append(h)
+    return dropoffs
+
