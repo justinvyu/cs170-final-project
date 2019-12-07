@@ -1,4 +1,4 @@
-# Team: ☠️⚰️ is no more.
+# Team: ☠️⚰️ NP is no more.
 
 ## CS 170 Fall 2019 Project
 
@@ -7,6 +7,8 @@
 Install packages
 
 ```pip3 install numpy networkx```
+
+
 
 
 
@@ -19,3 +21,4 @@ To run the solver on all inputs in a directory:
 To run the solver on one input
 
 ```python3 solver.py [input file] [output directory]```
+
