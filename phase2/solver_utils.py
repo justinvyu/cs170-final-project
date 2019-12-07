@@ -1,3 +1,7 @@
+import numpy as np
+import networkx as nx
+import collections
+
 def parse_input(filepath):
     """
     Parses an input file into its respective parts.

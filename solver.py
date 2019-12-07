@@ -51,14 +51,19 @@ def solve(list_of_locations,
                                  starting_car_location,
                                  adjacency_matrix, 2)
     options = [
-        (flp_t_0, flp_d_0),
-        (flp_t_1, flp_d_1),
-        (flp_t_2, flp_d_2),
-        (mst_t, mst_d),
-        (greedy_t, greedy_d),
+        ('FLP0', flp_t_0, flp_d_0),
+        ('FLP1', flp_t_1, flp_d_1),
+        ('FLP2', flp_t_2, flp_d_2),
+        ('MST_DFS', mst_t, mst_d),
+        ('GREEDY_SP', greedy_t, greedy_d),
     ]
-    selection = min(options, key = lambda x: cost_of_solution(G, x[0], x[1])[0])
-    local_t, local_d = local_search_solve(list_of_locations, list_of_homes, starting_car_location, adjacency_matrix, initial_solution=selection[0])
+    solver_name, solution, dropoffs = min(options, key=lambda x: cost_of_solution(G, x[1], x[2])[0])
+    print(f'\nUsed {solver_name}\n')
+    local_t, local_d = local_search_solve(list_of_locations,
+                                          list_of_homes,
+                                          starting_car_location,
+                                          adjacency_matrix,
+                                          initial_solution=solution)
     return local_t, local_d
 
 """

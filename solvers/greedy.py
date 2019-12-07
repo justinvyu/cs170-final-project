@@ -6,7 +6,6 @@ sys.path.append('..')
 
 from student_utils import adjacency_matrix_to_graph, cost_of_solution
 from phase2.solver_utils import parse_input, assign_dropoffs
-from visualize import plot_graph
 import collections
 import time
 
@@ -50,4 +49,4 @@ def greedy_shortest_path_solve(list_of_locations,
         
     traversal.extend(reconstruct_path(traversal[-1], source_idx, paths)[1:])
  
-    return traversal, assign_dropoffs(G, traversal, home_idxs)
+    return traversal, assign_dropoffs(G, traversal, home_idxs, all_pairs_dists)
