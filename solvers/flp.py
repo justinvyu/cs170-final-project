@@ -40,7 +40,7 @@ def flp_solve(list_of_locations,
     lst = [(s['cost']/s['count'], hash(s['facility'] + str(s['count'])), s) for s in S]
     result = set([])
     dropoff_mapping = defaultdict(list)
-    while uncovered:
+    while uncovered and lst:
         smallest = min(lst, key = lambda x: x[0])
         lst.remove(smallest)
         smallest = smallest[2]
